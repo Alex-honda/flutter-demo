@@ -20,3 +20,5 @@ samples, guidance on mobile development, and a full API reference.
 
 - Hello world案例的实现（2020/2/26）
 
+- 同意协议案例的实现（2020/2/27）
+
