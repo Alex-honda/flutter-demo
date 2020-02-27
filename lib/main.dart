@@ -1,48 +1,33 @@
 import 'package:flutter/material.dart';
 
-/*
-* 1.创建main函数
-* 2.执行runApp函数
-* 3.传入Widget -> Text Widget
-*
-* Text需要一个方向的参数
-*
-* */
-
-///main函数作为函数入口
-/*void main(){
+main(List<String> args) {
   runApp(MyApp());
-}*/
-
-main() => runApp(MyApp());
+}
 
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Hello World',
-      home: Scaffold(
-        appBar: AppBar(
-            title: Text("我是标题")
-        ),
-        body: ContentWidget(),
-      ),
-    );
+        home: Scaffold(
+            appBar: AppBar(title: Text("Alexandra")), body: HomeContent()));
   }
 }
 
-class ContentWidget extends StatelessWidget {
+class HomeContent extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Center(
-        child: Text(
-          "Hello World",
-          textDirection: TextDirection.ltr,
-          style: TextStyle(
-              fontSize: 30,
-              color: Colors.yellow
-          ),
-        )
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          Checkbox(value: true, onChanged: (value) => print("Hello world")),
+          Text(
+            "同意协议",
+            textDirection: TextDirection.ltr,
+            style: TextStyle(fontSize: 20),
+          )
+        ],
+      ),
     );
   }
 }
