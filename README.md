@@ -25,3 +25,5 @@ samples, guidance on mobile development, and a full API reference.
 - 商品列表案例的实现（2020/2/27）
 
 - 加减计数案例的实现（2020/2/27）
+
+- 生命周期案例的实现（2020/2/27）
