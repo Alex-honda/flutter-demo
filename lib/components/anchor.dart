@@ -3,17 +3,16 @@ import 'dart:convert';
 import 'dart:async';
 
 class Anchor {
-  String name;
-  int age;
-  String sex;
+  String title;
+  String description;
+  String imageUrl;
 
-  Anchor({this.name, this.age, this.sex});
+  Anchor({this.title, this.description, this.imageUrl});
 
   Anchor.withMap(Map<String, dynamic> parsedMap) {
-    print(parsedMap);
-    this.name = parsedMap["name"];
-    this.age = parsedMap["age"];
-    this.sex = parsedMap["sex"];
+    this.title = parsedMap["title"];
+    this.description = parsedMap["description"];
+    this.imageUrl = parsedMap["imageUrl"];
   }
 }
 
