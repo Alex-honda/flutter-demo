@@ -9,32 +9,11 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       home: Scaffold(
         appBar: AppBar(
-          title: Text("滚动Widget"),
+          title: Text("GridView"),
         ),
-        body: MySeparatedDemo(),
+        body: MyHomePage(),
       ),
     );
-  }
-}
-
-class MySeparatedDemo extends StatelessWidget {
-  Divider redColor = Divider(color: Colors.redAccent);
-  Divider blueColor = Divider(color: Colors.blueAccent);
-
-  @override
-  Widget build(BuildContext context) {
-    return ListView.separated(
-        itemBuilder: (BuildContext context, int index) {
-          return ListTile(
-            leading: Icon(Icons.people),
-            title: Text("联系人${index + 1}"),
-            subtitle: Text("联系人电话${index + 1}"),
-          );
-        },
-        separatorBuilder: (BuildContext context, int index) {
-          return index % 2 == 0 ? redColor : blueColor;
-        },
-        itemCount: 20);
   }
 }
 
@@ -46,14 +25,14 @@ class MyHomePage extends StatefulWidget {
 }
 
 class MyHomePageState extends State<MyHomePage> {
+
   List<Anchor> anchors = [];
 
   @override
   void initState() {
-    getAnchors().then((anchors) {
+    getAnchors().then((value) {
       setState(() {
-//        print(anchors);
-        this.anchors = anchors;
+        this.anchors = value;
       });
     });
     super.initState();
@@ -61,132 +40,85 @@ class MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return ListView.builder(
+    return Padding(
+      padding: EdgeInsets.all(8.0),
+      child: GridView.builder(
+        shrinkWrap: true,
+        physics: ClampingScrollPhysics(),
+        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 2,
+          mainAxisSpacing: 10.0,
+          crossAxisSpacing: 10.0,
+          childAspectRatio: 1.0
+        ),
         itemCount: anchors.length,
         itemBuilder: (BuildContext context, int index) {
-          return Padding(
-            padding: EdgeInsets.all(10),
+          return Container(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                Image.network(
-                  anchors[index].imageUrl,
-                  fit: BoxFit.fitWidth,
-                  width: MediaQuery.of(context).size.width,
-                ),
-                SizedBox(
-                  height: 8,
-                ),
-                Text(
-                  anchors[index].title,
-                  style: TextStyle(fontSize: 20),
-                ),
-                SizedBox(
-                  height: 5,
-                ),
-                Text(anchors[index].description)
+                Image.network(anchors[index].imageUrl, fit: BoxFit.cover, width: 200, height: 140),
+                SizedBox(height: 5),
+                Text(anchors[index].title, style: TextStyle(fontSize: 18), maxLines: 1, overflow: TextOverflow.ellipsis),
+                Text(anchors[index].description, maxLines: 1, overflow: TextOverflow.ellipsis)
               ],
             ),
           );
-        });
-  }
-}
-
-class MyBasiceListViewBuilderWidget extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return ListView.builder(
-      itemCount: 100,
-      itemExtent: 80,
-      itemBuilder: (BuildContext context, int index) {
-        return ListTile(title: Text("标题$index"), subtitle: Text("详情内容$index"));
-      },
+        },
+      ),
     );
   }
 }
 
-class MyScrollDirectionWidget extends StatelessWidget {
+class MyGridViewExtentWidget extends StatelessWidget {
+  List<Widget> getGridWidgets() {
+    return List.generate(100, (index) {
+      return Container(
+        color: Colors.purpleAccent,
+        alignment: Alignment(0, 0),
+        child: Text("item${index + 1}",
+            style: TextStyle(fontSize: 20, color: Colors.white)),
+      );
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    return ListView(
-      scrollDirection: Axis.vertical,
-      itemExtent: 300,
-      children: <Widget>[
-        Container(color: Colors.red, width: 200),
-        Container(color: Colors.green, width: 200),
-        Container(color: Colors.purple, width: 200),
-        Container(color: Colors.orange, width: 200),
-      ],
+    return GridView(
+      gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+        maxCrossAxisExtent: 150,
+        mainAxisSpacing: 10,
+        crossAxisSpacing: 10,
+        childAspectRatio: 1.0
+      ),
+      children: getGridWidgets(),
     );
   }
 }
 
-class MyListTileWidget extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return ListView(
-      children: <Widget>[
-        ListTile(
-          leading: Icon(
-            Icons.people,
-            size: 36,
-          ),
-          title: Text("联系人"),
-          subtitle: Text("联系人信息"),
-          trailing: Icon(Icons.arrow_forward_ios),
-        ),
-        ListTile(
-          leading: Icon(
-            Icons.email,
-            size: 36,
-          ),
-          title: Text("邮箱"),
-          subtitle: Text("邮箱地址信息"),
-          trailing: Icon(Icons.arrow_forward_ios),
-        ),
-        ListTile(
-          leading: Icon(
-            Icons.message,
-            size: 36,
-          ),
-          title: Text("消息"),
-          subtitle: Text("消息详情信息"),
-          trailing: Icon(Icons.arrow_forward_ios),
-        ),
-        ListTile(
-          leading: Icon(
-            Icons.map,
-            size: 36,
-          ),
-          title: Text("地址"),
-          subtitle: Text("地址详情信息"),
-          trailing: Icon(Icons.arrow_forward_ios),
-        ),
-      ],
-    );
+
+
+class MyGridViewWidget extends StatelessWidget {
+  List<Widget> getGridWidgets() {
+    return List.generate(100, (index) {
+      return Container(
+        color: Colors.purpleAccent,
+        alignment: Alignment(0, 0),
+        child: Text("item${index + 1}",
+            style: TextStyle(fontSize: 20, color: Colors.white)),
+      );
+    });
   }
-}
-
-class MyListViewWdiget extends StatelessWidget {
-  final TextStyle textStyle = TextStyle(fontSize: 20, color: Colors.redAccent);
 
   @override
   Widget build(BuildContext context) {
-    return ListView(
-      children: <Widget>[
-        Padding(
-          padding: EdgeInsets.all(10.0),
-          child: Text("人的一切痛苦，本质上都是对自己无能的愤怒。", style: textStyle),
-        ),
-        Padding(
-          padding: EdgeInsets.all(10.0),
-          child: Text("人的一切痛苦，本质上都是对自己无能的愤怒。", style: textStyle),
-        ),
-        Padding(
-          padding: EdgeInsets.all(10.0),
-          child: Text("人的一切痛苦，本质上都是对自己无能的愤怒。", style: textStyle),
-        )
-      ],
+    return GridView(
+      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 3,
+          mainAxisSpacing: 10.0,
+          crossAxisSpacing: 10.0,
+          childAspectRatio: 1.0),
+      children: getGridWidgets(),
     );
   }
 }
