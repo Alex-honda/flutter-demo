@@ -1,5 +1,5 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'components/anchor.dart';
 
 main() => runApp(MyApp());
 
@@ -9,116 +9,88 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       home: Scaffold(
         appBar: AppBar(
-          title: Text("GridView"),
+          title: Text("Slivers"),
         ),
-        body: MyHomePage(),
+        body: HomeContent(),
       ),
     );
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  @override
-  State<StatefulWidget> createState() {
-    return MyHomePageState();
-  }
-}
-
-class MyHomePageState extends State<MyHomePage> {
-
-  List<Anchor> anchors = [];
-
-  @override
-  void initState() {
-    getAnchors().then((value) {
-      setState(() {
-        this.anchors = value;
-      });
-    });
-    super.initState();
-  }
-
+class HomeContent extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.all(8.0),
-      child: GridView.builder(
-        shrinkWrap: true,
-        physics: ClampingScrollPhysics(),
-        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 2,
-          mainAxisSpacing: 10.0,
-          crossAxisSpacing: 10.0,
-          childAspectRatio: 1.0
-        ),
-        itemCount: anchors.length,
-        itemBuilder: (BuildContext context, int index) {
-          return Container(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                Image.network(anchors[index].imageUrl, fit: BoxFit.cover, width: 200, height: 140),
-                SizedBox(height: 5),
-                Text(anchors[index].title, style: TextStyle(fontSize: 18), maxLines: 1, overflow: TextOverflow.ellipsis),
-                Text(anchors[index].description, maxLines: 1, overflow: TextOverflow.ellipsis)
-              ],
+    return showCustomScrollView();
+  }
+
+  Widget showCustomScrollView() {
+    return new CustomScrollView(
+      slivers: <Widget>[
+        const SliverAppBar(
+          expandedHeight: 250.0,
+          flexibleSpace: FlexibleSpaceBar(
+            title: Text("Alexandra"),
+            background: Image(
+              image: NetworkImage(
+                  "https://tva1.sinaimg.cn/large/006y8mN6gy1g72j6nk1d4j30u00k0n0j.jpg"),
+              fit: BoxFit.cover,
             ),
-          );
-        },
-      ),
+          ),
+        ),
+        new SliverGrid(
+          gridDelegate: new SliverGridDelegateWithMaxCrossAxisExtent(
+              maxCrossAxisExtent: 200.0,
+              mainAxisSpacing: 10.0,
+              crossAxisSpacing: 10.0,
+              childAspectRatio: 4.0),
+          delegate:
+              new SliverChildBuilderDelegate((BuildContext context, int index) {
+            return new Container(
+              alignment: Alignment(0, 0),
+              color: Colors.teal[100 * (index % 9)],
+              child: new Text("grid item $index"),
+            );
+          }, childCount: 10),
+        ),
+        SliverFixedExtentList(
+          itemExtent: 50.0,
+          delegate:
+              new SliverChildBuilderDelegate((BuildContext context, int index) {
+            return new Container(
+              alignment: Alignment.center,
+              color: Colors.lightBlue[100 * (index % 9)],
+              child: Text("list item $index"),
+            );
+          }, childCount: 20),
+        )
+      ],
     );
   }
 }
 
-class MyGridViewExtentWidget extends StatelessWidget {
-  List<Widget> getGridWidgets() {
-    return List.generate(100, (index) {
-      return Container(
-        color: Colors.purpleAccent,
-        alignment: Alignment(0, 0),
-        child: Text("item${index + 1}",
-            style: TextStyle(fontSize: 20, color: Colors.white)),
-      );
-    });
-  }
-
+class BasicSlivers extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return GridView(
-      gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
-        maxCrossAxisExtent: 150,
-        mainAxisSpacing: 10,
-        crossAxisSpacing: 10,
-        childAspectRatio: 1.0
-      ),
-      children: getGridWidgets(),
-    );
-  }
-}
-
-
-
-class MyGridViewWidget extends StatelessWidget {
-  List<Widget> getGridWidgets() {
-    return List.generate(100, (index) {
-      return Container(
-        color: Colors.purpleAccent,
-        alignment: Alignment(0, 0),
-        child: Text("item${index + 1}",
-            style: TextStyle(fontSize: 20, color: Colors.white)),
-      );
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return GridView(
-      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 3,
-          mainAxisSpacing: 10.0,
-          crossAxisSpacing: 10.0,
-          childAspectRatio: 1.0),
-      children: getGridWidgets(),
+    return CustomScrollView(
+      slivers: <Widget>[
+        SliverSafeArea(
+          sliver: SliverPadding(
+            padding: EdgeInsets.all(8),
+            sliver: SliverGrid(
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 2, crossAxisSpacing: 10, mainAxisSpacing: 10),
+              delegate:
+                  SliverChildBuilderDelegate((BuildContext context, int index) {
+                return Container(
+                  alignment: Alignment(0, 0),
+                  color: Colors.orange,
+                  child: Text("item${index + 1}"),
+                );
+              }, childCount: 50),
+            ),
+          ),
+        )
+      ],
     );
   }
 }
