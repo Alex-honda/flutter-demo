@@ -35,3 +35,5 @@ samples, guidance on mobile development, and a full API reference.
 - JSON读取和解析案例的实现（2020/2/28）
 
 - 动态数据列表案例的实现（2020/2/28）
+
+- ListView中separated案例的实现（2020/2/29）

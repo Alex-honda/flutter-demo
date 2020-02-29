@@ -11,9 +11,30 @@ class MyApp extends StatelessWidget {
         appBar: AppBar(
           title: Text("滚动Widget"),
         ),
-        body: MyHomePage(),
+        body: MySeparatedDemo(),
       ),
     );
+  }
+}
+
+class MySeparatedDemo extends StatelessWidget {
+  Divider redColor = Divider(color: Colors.redAccent);
+  Divider blueColor = Divider(color: Colors.blueAccent);
+
+  @override
+  Widget build(BuildContext context) {
+    return ListView.separated(
+        itemBuilder: (BuildContext context, int index) {
+          return ListTile(
+            leading: Icon(Icons.people),
+            title: Text("联系人${index + 1}"),
+            subtitle: Text("联系人电话${index + 1}"),
+          );
+        },
+        separatorBuilder: (BuildContext context, int index) {
+          return index % 2 == 0 ? redColor : blueColor;
+        },
+        itemCount: 20);
   }
 }
 
@@ -51,23 +72,25 @@ class MyHomePageState extends State<MyHomePage> {
                 Image.network(
                   anchors[index].imageUrl,
                   fit: BoxFit.fitWidth,
-                  width: MediaQuery
-                      .of(context)
-                      .size
-                      .width,
+                  width: MediaQuery.of(context).size.width,
                 ),
-                SizedBox(height: 8,),
-                Text(anchors[index].title, style: TextStyle(fontSize: 20),),
-                SizedBox(height: 5,),
+                SizedBox(
+                  height: 8,
+                ),
+                Text(
+                  anchors[index].title,
+                  style: TextStyle(fontSize: 20),
+                ),
+                SizedBox(
+                  height: 5,
+                ),
                 Text(anchors[index].description)
               ],
             ),
           );
-        }
-    );
+        });
   }
 }
-
 
 class MyBasiceListViewBuilderWidget extends StatelessWidget {
   @override
@@ -104,25 +127,37 @@ class MyListTileWidget extends StatelessWidget {
     return ListView(
       children: <Widget>[
         ListTile(
-          leading: Icon(Icons.people, size: 36,),
+          leading: Icon(
+            Icons.people,
+            size: 36,
+          ),
           title: Text("联系人"),
           subtitle: Text("联系人信息"),
           trailing: Icon(Icons.arrow_forward_ios),
         ),
         ListTile(
-          leading: Icon(Icons.email, size: 36,),
+          leading: Icon(
+            Icons.email,
+            size: 36,
+          ),
           title: Text("邮箱"),
           subtitle: Text("邮箱地址信息"),
           trailing: Icon(Icons.arrow_forward_ios),
         ),
         ListTile(
-          leading: Icon(Icons.message, size: 36,),
+          leading: Icon(
+            Icons.message,
+            size: 36,
+          ),
           title: Text("消息"),
           subtitle: Text("消息详情信息"),
           trailing: Icon(Icons.arrow_forward_ios),
         ),
         ListTile(
-          leading: Icon(Icons.map, size: 36,),
+          leading: Icon(
+            Icons.map,
+            size: 36,
+          ),
           title: Text("地址"),
           subtitle: Text("地址详情信息"),
           trailing: Icon(Icons.arrow_forward_ios),
