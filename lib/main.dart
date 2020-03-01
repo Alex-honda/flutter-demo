@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 main() => runApp(MyApp());
@@ -9,88 +8,129 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       home: Scaffold(
         appBar: AppBar(
-          title: Text("Slivers"),
+          title: Text("NotificationListener"),
         ),
-        body: HomeContent(),
+        body: MyHomeNotificationDemo(),
       ),
     );
   }
 }
 
-class HomeContent extends StatelessWidget {
+class MyHomeNotificationDemo extends StatefulWidget {
+  @override
+  State<StatefulWidget> createState() {
+    return MyHomeNotificationDemoState();
+  }
+}
+
+class MyHomeNotificationDemoState extends State<MyHomeNotificationDemo> {
+  int _progress = 0;
+
   @override
   Widget build(BuildContext context) {
-    return showCustomScrollView();
-  }
-
-  Widget showCustomScrollView() {
-    return new CustomScrollView(
-      slivers: <Widget>[
-        const SliverAppBar(
-          expandedHeight: 250.0,
-          flexibleSpace: FlexibleSpaceBar(
-            title: Text("Alexandra"),
-            background: Image(
-              image: NetworkImage(
-                  "https://tva1.sinaimg.cn/large/006y8mN6gy1g72j6nk1d4j30u00k0n0j.jpg"),
-              fit: BoxFit.cover,
-            ),
+    return NotificationListener(
+      onNotification: (ScrollNotification notification) {
+        /*判断监听事件的类型*/
+        if(notification is ScrollStartNotification) {
+          print("开始滚动....");
+        } else if (notification is ScrollUpdateNotification) {
+          /*当前的位置和总长度*/
+          final currentPixel = notification.metrics.pixels;
+          final totalPixel = notification.metrics.maxScrollExtent;
+          double progress = currentPixel / totalPixel;
+          setState(() {
+            _progress = (progress * 100).toInt();
+          });
+          print("正在滚动${notification.metrics.pixels} - ${notification.metrics.maxScrollExtent}");
+        } else if(notification is ScrollEndNotification) {
+          print("结束滚动....");
+        }
+        return false;
+      },
+      child: Stack(
+        alignment: Alignment(0.9, 0.9),
+        children: <Widget>[
+          ListView.builder(
+            itemCount: 100,
+            itemExtent: 60,
+            itemBuilder: (BuildContext context, int index){
+              return ListTile(title: Text("item$index"));
+            },
           ),
-        ),
-        new SliverGrid(
-          gridDelegate: new SliverGridDelegateWithMaxCrossAxisExtent(
-              maxCrossAxisExtent: 200.0,
-              mainAxisSpacing: 10.0,
-              crossAxisSpacing: 10.0,
-              childAspectRatio: 4.0),
-          delegate:
-              new SliverChildBuilderDelegate((BuildContext context, int index) {
-            return new Container(
-              alignment: Alignment(0, 0),
-              color: Colors.teal[100 * (index % 9)],
-              child: new Text("grid item $index"),
-            );
-          }, childCount: 10),
-        ),
-        SliverFixedExtentList(
-          itemExtent: 50.0,
-          delegate:
-              new SliverChildBuilderDelegate((BuildContext context, int index) {
-            return new Container(
-              alignment: Alignment.center,
-              color: Colors.lightBlue[100 * (index % 9)],
-              child: Text("list item $index"),
-            );
-          }, childCount: 20),
-        )
-      ],
+          CircleAvatar(
+            radius: 30,
+            child: Text("$_progress%"),
+            backgroundColor: Colors.black54,
+          )
+        ],
+      ),
     );
   }
 }
 
-class BasicSlivers extends StatelessWidget {
+
+
+
+
+
+
+
+class MyScrollController extends StatefulWidget {
+  @override
+  State<StatefulWidget> createState() => MyHomePageState();
+}
+
+class MyHomePageState extends State<MyScrollController> {
+  ScrollController _controller;
+  bool _isShowTop = false;
+
+  @override
+  void initState() {
+    // 初始化ScrollController
+    _controller = ScrollController();
+
+    // 监听滚动
+    _controller.addListener(() {
+      var tempSsShowTop = _controller.offset >= 1000;
+      if (tempSsShowTop != _isShowTop) {
+        setState(() {
+          _isShowTop = tempSsShowTop;
+        });
+      }
+    });
+
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    //为了避免内存泄露，需要调用_controller.dispose
+    _controller.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
-    return CustomScrollView(
-      slivers: <Widget>[
-        SliverSafeArea(
-          sliver: SliverPadding(
-            padding: EdgeInsets.all(8),
-            sliver: SliverGrid(
-              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2, crossAxisSpacing: 10, mainAxisSpacing: 10),
-              delegate:
-                  SliverChildBuilderDelegate((BuildContext context, int index) {
-                return Container(
-                  alignment: Alignment(0, 0),
-                  color: Colors.orange,
-                  child: Text("item${index + 1}"),
-                );
-              }, childCount: 50),
-            ),
-          ),
-        )
-      ],
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("监听滚动事件"),
+      ),
+      body: ListView.builder(
+        itemCount: 100,
+        itemExtent: 60,
+        controller: _controller,
+        itemBuilder: (BuildContext context, int index) {
+          return ListTile(title: Text("item$index"));
+        },
+      ),
+      floatingActionButton: !_isShowTop
+          ? null
+          : FloatingActionButton(
+              child: Icon(Icons.arrow_upward),
+              onPressed: () {
+                _controller.animateTo(0,
+                    duration: Duration(milliseconds: 1000), curve: Curves.ease);
+              }),
     );
   }
 }
