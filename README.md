@@ -43,3 +43,5 @@ samples, guidance on mobile development, and a full API reference.
 - Slivers案例的实现（2020/3/1）
 
 - 监听滚动事件案例的实现（2020/3/1）
+
+- starRating和dashedLine的封装案例实现（2020/3/1）
